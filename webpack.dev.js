@@ -15,16 +15,16 @@ const config = merge.strategy({
   entry: 'prepend'
 })(common, {
   entry: [
-    // 'react-hot-loader/patch',
+    'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:3000',
-    // 'webpack/hot/only-dev-server'
+    'webpack/hot/only-dev-server'
   ],
   output: {
     publicPath: 'http://localhost:3000/js/build/'
   },
   devServer: {
     contentBase: BUILD_DIR,
-    hot: false,
+    hot: true,
     port: 3000,
     headers: {
       'Access-Control-Allow-Origin': '*',
@@ -39,7 +39,7 @@ const config = merge.strategy({
         'NODE_ENV': JSON.stringify('development')
       }
     }),
-    // new webpack.HotModuleReplacementPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new BundleTracker({filename: './webpack-stats-dev.json'})
   ]
