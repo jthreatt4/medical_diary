@@ -1,4 +1,5 @@
-import { render, Component } from 'inferno';
+import React, { Component } from 'react';
+import { render } from 'react-dom';
 
 let csrftoken = csrfToken();
 

@@ -20,14 +20,14 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.jsx?/,
+        test: /\.jsx?$/,
         include: APP_DIR,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['env'],
-            plugins: [["babel-plugin-inferno", {"imports": true}]]
+            presets: ['env', 'react'],
+            plugins: []
           }
         }
       },
