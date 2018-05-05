@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
+import NoteBookListEditor from './components/editor.jsx';
 
 let csrftoken = csrfToken();
 
@@ -37,7 +38,7 @@ class MyComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      counter: 0
+      counter: 1
     };
   }
   render() {
@@ -45,6 +46,7 @@ class MyComponent extends Component {
       <div>
         <h1>Header!</h1>
         <span>Counter is at: { this.state.counter }</span>
+        <NoteBookListEditor/>
       </div>
     );
   }
