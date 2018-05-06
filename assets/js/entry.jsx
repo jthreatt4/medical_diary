@@ -49,15 +49,24 @@ $.ajaxSetup({
 });
 
 class Entry {
-  constructor(content,timestamp = null) {
+  constructor(content, type, timestamp = null) {
     this.content = content;
     this.timestamp = timestamp || Date.now();
+    this.type = type;
+  }
+
+  save(cb) {
+    const entry_type = this.type;
+    const content = this.content;
+    const timestamp = moment(this.timestamp)._d.toISOString();
+    $.post('create_entry/', {timestamp, content, entry_type}, cb)
   }
 
   render() {
-    return <div key={this.timestamp}>
+    let type = this.type !== 'unstyled' ? `#${this.type}` : '';
+    return <div key={this.timestamp} className="entry">
       <span className="timestamp">{moment(this.timestamp).format('MMMM Do YYYY, h:mm:ss a')}</span>
-      <div>{this.content}</div>
+      <div>{this.content}<span className="todo"> {type}</span></div>
     </div>;
   }
 }
@@ -66,7 +75,7 @@ class MyComponent extends Component {
   constructor(props) {
     super(props);
     const entries = [].map(({content, type, timestamp}) => {
-      return new Entry(content, timestamp);
+      return new Entry(content, type, timestamp);
     });
     this.state = {
       counter: 1,
@@ -76,6 +85,15 @@ class MyComponent extends Component {
     this.handleReturn = this.handleReturn.bind(this);
     this.past = this.past.bind(this);
     this.future = this.future.bind(this);
+
+    $.get('journal_notes/', resp => {
+      let current_entries = this.state.entries;
+      let new_entries = resp.map(({content, entry_type, timestamp}) => {
+        return new Entry(content, entry_type, moment(timestamp))
+      });
+      let entries = current_entries.concat(new_entries);
+      this.setState({entries});
+    });
   }
 
   handleReturn(e, editorState) {
@@ -90,7 +108,8 @@ class MyComponent extends Component {
 
     let data = blocks[0].data;
     let type = blocks[0].type;
-    let result = new Entry(blocks[0].text);
+    let result = new Entry(blocks[0].text, type);
+    result.save(() => console.log('saving/saved'));
     let entries = this.state.entries;
     entries.push(result);
     this.setState({entries});
@@ -177,9 +196,9 @@ function handleTodo(match_result, editorState, currentBlock) {
 
 function generalWeight(regex) {
   return function (str, currentBlock) {
-  if (currentBlock.getType() === WEIGHT) return false;
-  return str.match(regex);
-}
+    if (currentBlock.getType() === WEIGHT) return false;
+    return str.match(regex);
+  }
 }
 
 

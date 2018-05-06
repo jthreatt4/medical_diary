@@ -19,13 +19,14 @@ from django.views.generic import TemplateView
 
 from integrations.views import redox_dest
 from appointments.views import appointments, create_appointment
-from journal.views import journal_notes
+from journal.views import journal_notes, CreateEntry
 
 urlpatterns = [
     path('redox_dest/', redox_dest),
     path('appts/', appointments),
     path('create_appt/', create_appointment),
-    path('journal_notes', journal_notes),
+    path('create_entry/', CreateEntry.as_view()),
+    path('journal_notes/', journal_notes),
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='base.html'))
 ]
