@@ -116,12 +116,15 @@ class MyComponent extends Component {
   }
 
   past(now) {
-    return r.filter(x => now > x.timestamp, this.state.entries)
+    let list = r.filter(x => now > x.timestamp, this.state.entries);
+    return r.sort((a,b) => b.timestamp - a.timestamp, list)
       .map(x => x.render());
+
   }
 
   future(now) {
-    return r.filter(x => now < x.timestamp, this.state.entries)
+    let list = r.filter(x => now < x.timestamp, this.state.entries);
+    return r.sort((a,b) => b.timestamp - a.timestamp, list)
       .map(x => x.render());
   }
 
