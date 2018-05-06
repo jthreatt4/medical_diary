@@ -6,6 +6,7 @@ import {
 import { convertToHTML } from 'draft-convert';
 import renderHTML from 'react-render-html';
 import * as r from 'ramda';
+import moment from 'moment';
 
 import {
   BulletJournalEditor, getBlockRendererFn
@@ -55,7 +56,7 @@ class Entry {
 
   render() {
     return <div key={this.timestamp}>
-      <span className="timestamp">{this.timestamp}</span>
+      <span className="timestamp">{moment(this.timestamp).format('MMMM Do YYYY, h:mm:ss a')}</span>
       <div>{this.content}</div>
     </div>;
   }
@@ -87,6 +88,8 @@ class MyComponent extends Component {
     // console.log('html', result);
     let blocks = editorState.getCurrentContent().getBlocksAsArray();  // there should only ever be one
 
+    let data = blocks[0].data;
+    let type = blocks[0].type;
     let result = new Entry(blocks[0].text);
     let entries = this.state.entries;
     entries.push(result);
@@ -107,23 +110,24 @@ class MyComponent extends Component {
     const now = Date.now();
     return (
       <MuiThemeProvider>
-        <AppBar title={"Health Diary"}/>
-        <h1>Header!</h1>
-        <span>Counter is at: { this.state.counter }</span>
-      <div>
-        <div className="future">
-          {this.future(now)}
+        <div>
+          <AppBar title={"Health Diary"}/>
+          <div className="future">
+            {this.future(now)}
+          </div>
+          <BulletJournalEditor matchers={[
+            [matchTodo, handleTodo],
+            [generalWeight(/(.*)(weigh-in|Weigh-in)(\s|\S)(\d*)/), handleGeneral(WEIGHT)],
+            [generalWeight(/(.*)(weighed|Weighed)(\s|\S)(\d*)/), handleGeneral(WEIGHT)],
+            [generalWeight(/(.*)(weight)(\s|\S)(\d*)/), handleGeneral(WEIGHT)],
+          ]}
+                               blockRendererFn={getBlockRendererFn}
+                               handleReturn={this.handleReturn}
+          />
+          <div className="past">
+            {this.past(now)}
+          </div>
         </div>
-        <BulletJournalEditor matchers={[
-          [matchTodo, handleTodo]
-        ]}
-                             blockRendererFn={getBlockRendererFn}
-                             handleReturn={this.handleReturn}
-        />
-        <div className="past">
-          {this.past(now)}
-        </div>
-      </div>
       </MuiThemeProvider>
     );
   }
@@ -136,6 +140,10 @@ render(
 
 
 const TODO_BLOCK = 'todo';
+const EXERCISE = 'exercise';
+const DIET = 'diet';
+const APPOINTMENT = 'appointment';
+const WEIGHT = 'weight';
 
 function matchTodo(str, currentBlock) {
   return str.match(/^\[\]$/);
@@ -167,9 +175,49 @@ function handleTodo(match_result, editorState, currentBlock) {
   return EditorState.push(editorState, newContentState, 'change-block-type');
 }
 
+function generalWeight(regex) {
+  return function (str, currentBlock) {
+  if (currentBlock.getType() === WEIGHT) return false;
+  return str.match(regex);
+}
+}
+
+
+function handleGeneral(type) {
+  return function (match_result, editorState, currentBlock) {
+    const newType = currentBlock.getType() !== type ? WEIGHT : 'unstyled';
+    const contentState = editorState.getCurrentContent();
+    const selectionState = editorState.getSelection();
+    const key = selectionState.getStartKey();
+    const blockMap = contentState.getBlockMap();
+    const block = blockMap.get(key);
+    let newText = '';
+    const text = block.getText();
+    newText = text;
+    const newBlock = block.merge({
+      text: newText,
+      type: newType,
+      data: getDefaultBlockData(newType)
+    });
+    const newContentState = contentState.merge({
+      blockMap: blockMap.set(key, newBlock),
+      // selectionAfter: selectionState.merge({
+      //   anchorOffset: 0,
+      //   focusOffset: 0
+      // })
+      selectionAfter: selectionState
+    });
+    return EditorState.push(editorState, newContentState, 'change-block-type');
+  }
+}
+
 function getDefaultBlockData(blockType, initialData={}) {
   switch(blockType) {
-    case TODO_BLOCK: return {checked:false};
+    case TODO_BLOCK: return {checked:false, tag: 'todo'};
+    case EXERCISE: return {tag: 'exercise'};
+    case DIET: return {tag: 'diet'};
+    case APPOINTMENT: return {tag: 'appointment'};
+    case WEIGHT: return {tag: 'weight'};
     default: return initialData;
   }
 }

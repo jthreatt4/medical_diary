@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { Map } from 'immutable';
 import TodoBlock from './todo_block.jsx';
+import WeightBlock from './weight_block.jsx';
+import AppointmentBlock from './appointment_block.jsx';
+import ExerciseBlock from './exercise_block.jsx';
+import DietBlock from './diet_block.jsx';
 
 import {
   Editor,
@@ -16,7 +20,19 @@ export class BulletJournalEditor extends Component {
     this.blockRenderMap = Map({
       [TODO_BLOCK]: {
         element: 'div'
-      }
+      },
+      [DIET]: {
+        element: 'div'
+      },
+      [EXERCISE]: {
+        element: 'div'
+      },
+      [APPOINTMENT]: {
+        element: 'div'
+      },
+      [WEIGHT]: {
+        element: 'div'
+      },
     }).merge(DefaultDraftBlockRenderMap);
 
     this.state = {
@@ -178,6 +194,10 @@ export class BulletJournalEditor extends Component {
 
 
 const TODO_BLOCK = 'todo';
+const EXERCISE = 'exercise';
+const DIET = 'diet';
+const APPOINTMENT = 'appointment';
+const WEIGHT = 'weight';
 
 export function getBlockRendererFn(getEditorState, onChange) {
   return block => {
@@ -186,6 +206,38 @@ export function getBlockRendererFn(getEditorState, onChange) {
       case TODO_BLOCK:
         return {
           component: TodoBlock,
+          props: {
+            getEditorState,
+            onChange,
+          }
+        };
+        case EXERCISE:
+        return {
+          component: ExerciseBlock,
+          props: {
+            getEditorState,
+            onChange,
+          }
+        };
+        case DIET:
+        return {
+          component: DietBlock,
+          props: {
+            getEditorState,
+            onChange,
+          }
+        };
+        case APPOINTMENT:
+        return {
+          component: AppointmentBlock,
+          props: {
+            getEditorState,
+            onChange,
+          }
+        };
+        case WEIGHT:
+        return {
+          component: WeightBlock,
           props: {
             getEditorState,
             onChange,
