@@ -7,6 +7,9 @@ import {
 import {
   BulletJournalEditor, getBlockRendererFn
 } from './components/editor.jsx';
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import AppBar from 'material-ui/AppBar';
 import '../sass/main.scss';
 
 let csrftoken = csrfToken();
@@ -50,7 +53,8 @@ class MyComponent extends Component {
   }
   render() {
     return (
-      <div>
+      <MuiThemeProvider>
+        <AppBar title={"Health Diary"}/>
         <h1>Header!</h1>
         <span>Counter is at: { this.state.counter }</span>
         <BulletJournalEditor matchers={[
@@ -58,7 +62,7 @@ class MyComponent extends Component {
         ]}
                              blockRendererFn={getBlockRendererFn}
         />
-      </div>
+      </MuiThemeProvider>
     );
   }
 }
