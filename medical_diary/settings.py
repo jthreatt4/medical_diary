@@ -25,7 +25,7 @@ SECRET_KEY = '2w7csdbr_t@ks8%it-c-m9*gu0r-ib_4^c)oq835%k_%(7s)^!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'webpack_loader',
     'rest_framework',
 
-    'journal'
+    'journal',
+    'integrations',
+    'appointments',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +129,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets')
 ]
+
+# Redox creds
+REDOX_API_KEY = 'be72480b-802a-4701-8b63-a2dbe199048d'
+REDOX_SECRET = 'jnz5SgmC3vBqVkH9CA7Wq9foIzZnGH6sFgamREeeopHe0OLsFXp2tcBAuW3VdEzGRx5dLGOQ'
+REDOX_API_URL = 'https://api.redoxengine.com'
+REDOX_BLOB_URL = 'https://blob.redoxengine.com'

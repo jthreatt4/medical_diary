@@ -17,7 +17,13 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
 
+from integrations.views import redox_dest
+from appointments.views import appointments, create_appointment
+
 urlpatterns = [
+    path('redox_dest/', redox_dest),
+    path('appts/', appointments),
+    path('create_appt/', create_appointment),
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='base.html'))
 ]
