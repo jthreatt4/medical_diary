@@ -16,3 +16,9 @@ class RedoxTestCase(TestCase):
     def test_redox(self):
         service = RedoxService(integration=self.integration)
         service.new_schedule()
+
+    def test_seed(self):
+        service = RedoxService(integration=self.integration)
+        service.new_schedule()
+        # create seed integration obj
+        raise Exception

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'journal',
     'integrations',
+    'appointments',
 ]
 
 MIDDLEWARE = [
@@ -134,14 +135,3 @@ REDOX_API_KEY = 'be72480b-802a-4701-8b63-a2dbe199048d'
 REDOX_SECRET = 'jnz5SgmC3vBqVkH9CA7Wq9foIzZnGH6sFgamREeeopHe0OLsFXp2tcBAuW3VdEzGRx5dLGOQ'
 REDOX_API_URL = 'https://api.redoxengine.com'
 REDOX_BLOB_URL = 'https://blob.redoxengine.com'
-
-# Caching
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}
