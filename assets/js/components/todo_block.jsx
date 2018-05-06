@@ -1,17 +1,7 @@
 import React, { Component } from 'react';
-
 import { EditorBlock, EditorState } from 'draft-js';
 
-function updateDataOfBlock(editorState, block, newData) {
-  const contentState = editorState.getCurrentContent();
-  const newBlock = block.merge({
-    data: newData
-  });
-  const newContentState = contentState.merge({
-    blockMap: contentState.getBlockMap().set(block.getKey(), newBlock),
-  });
-  return EditorState.push(editorState, newContentState, 'change-block-type');
-}
+import { updateDataOfBlock } from "../utils.jsx";
 
 export default class ToDoBlock extends Component {
   constructor(props) {

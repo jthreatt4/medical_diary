@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import NoteBookListEditor from './components/editor.jsx';
+import {
+  EditorState
+} from 'draft-js';
+
+import {
+  BulletJournalEditor, getBlockRendererFn
+} from './components/editor.jsx';
 import '../sass/main.scss';
 
 let csrftoken = csrfToken();
@@ -47,7 +53,11 @@ class MyComponent extends Component {
       <div>
         <h1>Header!</h1>
         <span>Counter is at: { this.state.counter }</span>
-        <NoteBookListEditor/>
+        <BulletJournalEditor matchers={[
+          [matchTodo, handleTodo]
+        ]}
+                             blockRendererFn={getBlockRendererFn}
+        />
       </div>
     );
   }
@@ -57,3 +67,43 @@ render(
   <MyComponent />,
   document.getElementById("app")
 );
+
+
+const TODO_BLOCK = 'todo';
+
+function matchTodo(str, currentBlock) {
+  return str.match(/^\[\]$/);
+}
+function handleTodo(match_result, editorState, currentBlock) {
+  const newType = currentBlock.getType() !== TODO_BLOCK ? TODO_BLOCK : 'unstyled';
+  const contentState = editorState.getCurrentContent();
+  const selectionState = editorState.getSelection();
+  const key = selectionState.getStartKey();
+  const blockMap = contentState.getBlockMap();
+  const block = blockMap.get(key);
+  let newText = '';
+  const text = block.getText();
+  if (block.getLength() >= 2) {
+    newText = text.substr(1);
+  }
+  const newBlock = block.merge({
+    text: newText,
+    type: newType,
+    data: getDefaultBlockData(newType)
+  });
+  const newContentState = contentState.merge({
+    blockMap: blockMap.set(key, newBlock),
+    selectionAfter: selectionState.merge({
+      anchorOffset: 0,
+      focusOffset: 0
+    })
+  });
+  return EditorState.push(editorState, newContentState, 'change-block-type');
+}
+
+function getDefaultBlockData(blockType, initialData={}) {
+  switch(blockType) {
+    case TODO_BLOCK: return {checked:false};
+    default: return initialData;
+  }
+}
