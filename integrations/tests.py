@@ -16,6 +16,3 @@ class RedoxTestCase(TestCase):
     def test_redox(self):
         service = RedoxService(integration=self.integration)
         service.new_schedule()
-        # cat = Animal.objects.get(name="cat")
-        # self.assertEqual(lion.speak(), 'The lion says "roar"')
-        # self.assertEqual(cat.speak(), 'The cat says "meow"')
