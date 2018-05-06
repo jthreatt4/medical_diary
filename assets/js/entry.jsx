@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import NoteBookListEditor from './components/editor.jsx';
+import '../sass/main.scss';
 
 let csrftoken = csrfToken();
 
