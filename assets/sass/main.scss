@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+// 1. Configuration and helpers
+@import
+'abstracts/variables',
+'abstracts/mixins';
+
+// 2. Vendors
+
+// 3. Base Stuff
+@import
+'base/_base',
+'base/fonts',
+'base/typography',
+'base/helpers';
+.block {
+  border: red 1px solid;
+}
+
+.block.block-todo {
+  border: blue 1px solid;
+}
