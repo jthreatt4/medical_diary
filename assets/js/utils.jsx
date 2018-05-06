@@ -1,4 +1,4 @@
-import r from 'ramda';
+import * as r from 'ramda';
 import kefir from 'kefir';
 import React, { Component, createElement } from 'react';
 const h = createElement;

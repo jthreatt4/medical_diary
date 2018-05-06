@@ -3,6 +3,9 @@ import { render } from 'react-dom';
 import {
   EditorState
 } from 'draft-js';
+import { convertToHTML } from 'draft-convert';
+import renderHTML from 'react-render-html';
+import * as r from 'ramda';
 
 import {
   BulletJournalEditor, getBlockRendererFn
@@ -44,24 +47,83 @@ $.ajaxSetup({
   }
 });
 
+class Entry {
+  constructor(content,timestamp = null) {
+    this.content = content;
+    this.timestamp = timestamp || Date.now();
+  }
+
+  render() {
+    return <div key={this.timestamp}>
+      <span className="timestamp">{this.timestamp}</span>
+      <div>{this.content}</div>
+    </div>;
+  }
+}
+
 class MyComponent extends Component {
   constructor(props) {
     super(props);
+    const entries = [].map(({content, type, timestamp}) => {
+      return new Entry(content, timestamp);
+    });
     this.state = {
-      counter: 1
+      counter: 1,
+      entries
     };
+
+    this.handleReturn = this.handleReturn.bind(this);
+    this.past = this.past.bind(this);
+    this.future = this.future.bind(this);
   }
+
+  handleReturn(e, editorState) {
+    // let html = convertToHTML({
+    //   blockToHTML: block => {
+    //     return <div />;
+    //   }
+    // })(editorState.getCurrentContent());
+    // let result = renderHTML(html);
+    // console.log('html', result);
+    let blocks = editorState.getCurrentContent().getBlocksAsArray();  // there should only ever be one
+
+    let result = new Entry(blocks[0].text);
+    let entries = this.state.entries;
+    entries.push(result);
+    this.setState({entries});
+  }
+
+  past(now) {
+    return r.filter(x => now > x.timestamp, this.state.entries)
+      .map(x => x.render());
+  }
+
+  future(now) {
+    return r.filter(x => now < x.timestamp, this.state.entries)
+      .map(x => x.render());
+  }
+
   render() {
+    const now = Date.now();
     return (
       <MuiThemeProvider>
         <AppBar title={"Health Diary"}/>
         <h1>Header!</h1>
         <span>Counter is at: { this.state.counter }</span>
+      <div>
+        <div className="future">
+          {this.future(now)}
+        </div>
         <BulletJournalEditor matchers={[
           [matchTodo, handleTodo]
         ]}
                              blockRendererFn={getBlockRendererFn}
+                             handleReturn={this.handleReturn}
         />
+        <div className="past">
+          {this.past(now)}
+        </div>
+      </div>
       </MuiThemeProvider>
     );
   }

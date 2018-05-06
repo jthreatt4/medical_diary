@@ -30,6 +30,7 @@ export class BulletJournalEditor extends Component {
 
     this.handleBeforeInput = this.handleBeforeInput.bind(this);
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
+    this.handleReturn = this.handleReturn.bind(this);
   }
 
   componentDidMount() {
@@ -72,6 +73,13 @@ export class BulletJournalEditor extends Component {
     return false;
   }
 
+  handleReturn(e, editorState) {
+    this.props.handleReturn(e, editorState);
+    editorState = EditorState.createEmpty();
+    this.setState({editorState});
+    return 'handled';
+  }
+
   render() {
     return <Editor ref='editor'
                    editorState={this.state.editorState}
@@ -81,6 +89,7 @@ export class BulletJournalEditor extends Component {
                    blockStyleFn={this.blockStyleFn}
                    handleKeyCommand={this.handleKeyCommand}
                    handleBeforeInput={this.handleBeforeInput}
+                   handleReturn={this.handleReturn}
     />
   }
 }
