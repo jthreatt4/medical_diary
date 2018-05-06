@@ -10,6 +10,9 @@ import * as r from 'ramda';
 import {
   BulletJournalEditor, getBlockRendererFn
 } from './components/editor.jsx';
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import AppBar from 'material-ui/AppBar';
 import '../sass/main.scss';
 
 let csrftoken = csrfToken();
@@ -103,6 +106,10 @@ class MyComponent extends Component {
   render() {
     const now = Date.now();
     return (
+      <MuiThemeProvider>
+        <AppBar title={"Health Diary"}/>
+        <h1>Header!</h1>
+        <span>Counter is at: { this.state.counter }</span>
       <div>
         <div className="future">
           {this.future(now)}
@@ -117,6 +124,7 @@ class MyComponent extends Component {
           {this.past(now)}
         </div>
       </div>
+      </MuiThemeProvider>
     );
   }
 }

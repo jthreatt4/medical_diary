@@ -16,16 +16,18 @@ class RedoxService:
             'content-type': 'application/json',
         }
 
-    def new_schedule(self):
+    def new_schedule(self, datetime=None):
         res = requests.post(self.url, headers=self.headers, json=new_schedule_payload)
         params = new_schedule_payload
         appt = Appointment.objects.create(
-            provider='redox',
+            provider=params['Visit']['AttendingProvider']['ID'],
             address=params['Visit']['AttendingProvider']['Address']['StreetAddress'],
             city=params['Visit']['AttendingProvider']['Address']['City'],
             state=params['Visit']['AttendingProvider']['Address']['State'],
             first_name=params['Visit']['AttendingProvider']['FirstName'],
             last_name=params['Visit']['AttendingProvider']['LastName'],
+            reason=params['Visit']['Reason'],
+            timestamp=datetime or params['Visit']['VisitDateTime']
         )
 
     def available_slots(self):
