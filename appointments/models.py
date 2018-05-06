@@ -9,3 +9,10 @@ class Appointment(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     reason = models.CharField(max_length=255, blank=True, null=True)
+    timestamp = models.DateTimeField()
+
+    def __str__(self):
+        return self.reason
+
+    def entry_type(self):
+        return 'appointment'
